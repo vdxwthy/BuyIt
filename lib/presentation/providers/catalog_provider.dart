@@ -27,6 +27,7 @@ class CatalogProvider with ChangeNotifier {
 
   Future<void> fetchSubCategoriesByCategory(model.Category category) async {
     _subcategories = await GetIt.I<SupabaseService>().fetchSubCategoriesByCategory(category);
+    notifyListeners();
   }
 
 
