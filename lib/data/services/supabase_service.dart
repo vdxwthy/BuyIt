@@ -11,14 +11,11 @@ class SupabaseService {
 
   Future<List<Category>> fetchCategoriesByStore(int storeId) async {
     final response = await _client.from('categories').select().eq('store', storeId);
-    print("фетч категори");
     return (response as List).map((json) => Category.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   Future<List<Store>> fetchStores() async {
     final response = await _client.from('stores').select();
-    print("фетч магазины");
-
     return (response as List).map((json) => Store.fromJson(json as Map<String, dynamic>)).toList();
   }
 
@@ -43,7 +40,6 @@ class SupabaseService {
       .from("subcategories")
       .select()
       .inFilter('id', subcategoryIds);
-    print(subcategoriesResponse.length);
 
     return (subcategoriesResponse as List)
       .map((json) => Subcategory.fromJson(json as Map<String, dynamic>))
