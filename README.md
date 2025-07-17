@@ -41,7 +41,7 @@ BuyIt помогает пользователям собирать в одном
 1. Клонируй репозиторий:
 
 ```bash
-git clone https://github.com/твой-никнейм/buy_it.git
+git clone https://github.com/the-true-man/BuyIt
 ```
 
 P.S. Добавлю мб сюда прям парсер для магазинов либо отдельную репу создам
