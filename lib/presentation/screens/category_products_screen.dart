@@ -1,5 +1,7 @@
+import 'package:buy_it/core/constants/colors.dart';
 import 'package:buy_it/data/models/category.dart';
 import 'package:buy_it/presentation/providers/catalog_provider.dart';
+import 'package:buy_it/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +21,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     final args = ModalRoute.of(context)?.settings.arguments;
     if (args is Category && selectedCategory?.id != args.id) {
       selectedCategory = args;
-      context.read<CatalogProvider>().fetchSubCategoriesByCategory(selectedCategory!);
+      context.read<CatalogProvider>().fetchProductByCategory(selectedCategory!);
     } else if (args == null) {
       Navigator.pop(context); 
     }
@@ -27,24 +29,60 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   
   @override
   Widget build(BuildContext context) {
-    final subcategories = context.watch<CatalogProvider>().subgategories;
+    final productByCategory = context.watch<CatalogProvider>().productByCategory;
     return Scaffold(
+      backgroundColor: grayColor,
       appBar: AppBar(
-        title: Text(selectedCategory!.name),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search_outlined, color: Colors.black,),
+            onPressed: () {
+
+            },
+          ),
+        ],
+        title: Text(selectedCategory?.name ?? "Упс..."),
+        backgroundColor: grayColor,
       ),
       body: ListView.builder(
-        itemCount: subcategories.length,
+        itemCount: productByCategory.keys.length,
         itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(
-              subcategories[index].name,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24,
+          final subcategory = productByCategory.keys.elementAt(index);
+          final products = productByCategory[subcategory]!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  subcategory.name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24,
+                  ),
+                ),
               ),
-            ),
+              GridView.builder(
+                padding: EdgeInsets.all(12),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  childAspectRatio: 0.70
+                ),
+                itemCount: products.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemBuilder: (context, index2) {
+                  final product = products[index2];
+                  return ProductCard(product: product);
+                },
+              ),
+            ],
           );
-        }),
+        },
+      ),
+
     );
   }
 }

@@ -36,26 +36,26 @@ class _CatalogScreenState extends State<CatalogScreen> {
     final categories = context.watch<CatalogProvider>().categories;
     final stores = context.watch<CatalogProvider>().stores;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         bottom: false,
-
         child:  Container(
-              margin: const EdgeInsets.all(10),
+              margin: const EdgeInsets.only(right: 12, left: 12),
               child:  
                   Column(
                     children: [
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(115, 229, 229, 229),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color.fromARGB(255, 228, 228, 228))
+                          color: const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.04),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.05))
                         ),
                         child: TextField(
-                          decoration: const InputDecoration(
+                          decoration: InputDecoration(
                             hintText: 'Ищите товары',
-                            hintStyle: TextStyle(color: Color.fromARGB(255, 172, 172, 172)),
-                            prefixIcon: Icon(Icons.search, color: Color.fromARGB(255, 172, 172, 172), size: 22),
+                            hintStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.2)),
+                            prefixIcon: Icon(Icons.search, color: Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.2), size: 22),
                             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             border: InputBorder.none,
                           ),
@@ -79,15 +79,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
                               },
                               child: AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                   margin: const EdgeInsets.only(right: 8),
                                   alignment: Alignment.center,
                                   decoration: BoxDecoration(
-                                    color: isSelected ? chizhikPrimaryColor : const Color.fromARGB(115, 229, 229, 229),
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: isSelected ? accentColor : Color.fromARGB(115, 0, 0, 0).withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.05))
                                   ),
                                   child: Text(
                                     store.name,
+                                    style: TextStyle(
+                                      color: isSelected ? const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.85) : Colors.black.withValues(alpha: 0.5),
+                                      fontSize: 14,
+                                    ),
                                   ),
                                 )
                             );

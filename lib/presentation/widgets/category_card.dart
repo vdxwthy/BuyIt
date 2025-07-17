@@ -28,16 +28,16 @@ class _CategoryCardState extends State<CategoryCard> {
         child: Container(
           constraints: const BoxConstraints(maxHeight: 30),
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 229, 229, 229),
-            borderRadius: BorderRadius.circular(30),
+            color: const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.03),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Text(
             widget.category.name,
             style: const TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w500,
               color: Colors.black,
             ),
             softWrap: true,
