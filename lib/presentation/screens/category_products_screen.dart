@@ -33,6 +33,7 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     return Scaffold(
       backgroundColor: grayColor,
       appBar: AppBar(
+        scrolledUnderElevation: 0, 
         actions: [
           IconButton(
             icon: Icon(Icons.search_outlined, color: Colors.black,),

@@ -52,7 +52,7 @@ class _ProductCardState extends State<ProductCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 PriceCard(
-                  price: widget.product.price.toString(),
+                  price: widget.product.price.toStringAsFixed(0),
                   fractional: "00",
                   unit: "₽",
                 ),
