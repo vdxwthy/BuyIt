@@ -20,7 +20,7 @@ Future<void> main() async {
       providers: [
         ChangeNotifierProvider(create: (_) {
           final catalogProvider = CatalogProvider();
-          catalogProvider.init(); // Вызываем init() здесь
+          catalogProvider.init(); 
           return catalogProvider;
         }),
       ],

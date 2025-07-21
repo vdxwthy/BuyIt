@@ -69,7 +69,16 @@ class _ProductCardState extends State<ProductCard> {
                       highlightColor: Colors.transparent,
                       onPressed: (){
                         context.read<CatalogProvider>().appendId(widget.product.id);
-                        
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Товар добавлен в список покупок!',
+                              style: TextStyle(color: Colors.black),
+                              ),
+                            backgroundColor: accentColor,
+                            duration:Duration(milliseconds: 500),
+                            )
+                        );
                       },
                       icon: Icon(Icons.add_rounded)),
                 ),
