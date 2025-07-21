@@ -12,7 +12,7 @@ class CatalogProvider with ChangeNotifier {
   List<Store> _stores = [];
   List<Subcategory> _subcategories = [];
   Map<Subcategory, List<Product>> _productByCategory = {};
-  Map<int, bool> _productBuyMap = {}; // 👈 Заменили List<int> на Map<int, bool>
+  Map<int, bool> _productBuyMap = {};
   List<Product> _productsInWishlist = [];
 
   Map<int, bool> get productBuyMap => _productBuyMap;
@@ -52,14 +52,13 @@ class CatalogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// 🧩 Сохраняем словарь id:bool в SharedPreferences
+
   Future<void> saveProductBuyMap(Map<int, bool> map) async {
     final prefs = await SharedPreferences.getInstance();
     final entries = map.entries.map((e) => '${e.key}:${e.value}').toList();
     await prefs.setStringList('shopping_list_map', entries);
   }
 
-  /// 🧩 Загружаем словарь id:bool из SharedPreferences
   Future<Map<int, bool>> loadProductBuyMap() async {
     final prefs = await SharedPreferences.getInstance();
     final entries = prefs.getStringList('shopping_list_map') ?? [];
@@ -77,7 +76,6 @@ class CatalogProvider with ChangeNotifier {
     return map;
   }
 
-  /// ✅ Добавить товар (по умолчанию — не куплен)
   Future<void> appendId(int id) async {
     if (_productBuyMap.containsKey(id)) return;
     _productBuyMap[id] = false;
@@ -85,7 +83,6 @@ class CatalogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ Удалить товар
   Future<void> deleteId(int id) async {
     if (!_productBuyMap.containsKey(id)) return;
     _productBuyMap.remove(id);
@@ -93,7 +90,6 @@ class CatalogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ Пометить как куплен / не куплен
   Future<void> toggleBought(int id, bool value) async {
     if (!_productBuyMap.containsKey(id)) return;
     _productBuyMap[id] = value;
@@ -101,7 +97,6 @@ class CatalogProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  /// ✅ Очистить весь список
   Future<void> clearWishlist() async {
     _productsInWishlist = [];
     _productBuyMap = {};

@@ -18,7 +18,11 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => CatalogProvider()),
+        ChangeNotifierProvider(create: (_) {
+          final catalogProvider = CatalogProvider();
+          catalogProvider.init(); // Вызываем init() здесь
+          return catalogProvider;
+        }),
       ],
       child: const ChizhikApp(),
     ),
