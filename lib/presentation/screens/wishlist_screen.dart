@@ -27,7 +27,6 @@ class _WishlistScreenState extends State<WishlistScreen> {
     final isBoughtMap = provider.productBuyMap;
     final allProducts = provider.productsInWishlist;
 
-    // Сортируем: сначала не купленные, потом купленные
     final sortedProducts = [...allProducts]..sort((a, b) {
       final aBought = isBoughtMap[a.id] ?? false;
       final bBought = isBoughtMap[b.id] ?? false;
@@ -61,7 +60,10 @@ class _WishlistScreenState extends State<WishlistScreen> {
                     animation: animation,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: ProductCardInWishlist(product: item),
+                      child: ProductCardInWishlist(
+                        key: ValueKey(item.id),
+                        product: item,
+                      ),
                     ),
                   );
                 },

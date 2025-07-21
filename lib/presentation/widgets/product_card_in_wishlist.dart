@@ -26,8 +26,9 @@ class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
         children: [
           Image.network(
             widget.product.imageUrl ?? "https://upload.wikimedia.org/wikipedia/commons/9/9a/%D0%9D%D0%B5%D1%82_%D1%84%D0%BE%D1%82%D0%BE.png",
-            height: 75,
-            width: 75,
+            height: 90,
+            width: 90,
+            fit: BoxFit.contain,
           ),
           const SizedBox(width: 16),
           Expanded( 
