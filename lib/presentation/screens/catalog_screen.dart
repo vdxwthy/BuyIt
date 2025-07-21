@@ -125,7 +125,16 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 ],
               )
             ),
-      ) 
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/wishlist');
+        },
+        backgroundColor: accentColor,
+        elevation: 0,
+        tooltip: "Корзина",
+        child: const Icon(Icons.shopping_cart, color: Colors.white),
+      ),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:buy_it/core/constants/colors.dart';
 import 'package:buy_it/data/models/category.dart';
 import 'package:buy_it/presentation/providers/catalog_provider.dart';
@@ -38,7 +39,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
           IconButton(
             icon: Icon(Icons.search_outlined, color: Colors.black,),
             onPressed: () {
-
             },
           ),
         ],
@@ -55,8 +55,10 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
+                child: AutoSizeText(
                   subcategory.name,
+                  maxLines: 1,
+                  minFontSize: 18,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24,

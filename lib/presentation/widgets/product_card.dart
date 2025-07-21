@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:buy_it/core/constants/colors.dart';
 import 'package:buy_it/data/models/product.dart';
+import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:buy_it/presentation/widgets/price_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
   const ProductCard({super.key, required this.product});
@@ -20,8 +22,7 @@ class _ProductCardState extends State<ProductCard> {
         borderRadius: BorderRadius.circular(16),
         color: Colors.white,
       ),
-       child: Expanded(
-        child: Column(
+       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 16, bottom: 6),
@@ -36,8 +37,9 @@ class _ProductCardState extends State<ProductCard> {
             padding: EdgeInsets.symmetric(horizontal: 8), 
             child: AutoSizeText(
             widget.product.name,
-            maxLines: 3,
-            minFontSize: 8,
+            maxLines: 2,
+            minFontSize: 10,
+            maxFontSize: 12,
             style: TextStyle(
               color: Colors.black.withValues(alpha: 0.75),
               fontSize: 12,
@@ -56,21 +58,28 @@ class _ProductCardState extends State<ProductCard> {
                   fractional: "00",
                   unit: "₽",
                 ),
-                Container(
+                AnimatedContainer(
+                  duration: Duration(milliseconds: 200), 
+                  child: Container(
                   decoration: BoxDecoration(
                       color: accentColor.withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(8)
                   ),
                   child: IconButton(
-                      onPressed: (){}, 
+                      highlightColor: Colors.transparent,
+                      onPressed: (){
+                        context.read<CatalogProvider>().appendId(widget.product.id);
+                        
+                      },
                       icon: Icon(Icons.add_rounded)),
-                )
+                ),
+                  )
+                
               ],
             ),
           )
         ],
       ),
-       )  
     );
   }
 }
