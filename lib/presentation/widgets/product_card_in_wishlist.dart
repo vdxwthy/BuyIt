@@ -1,6 +1,6 @@
 import 'package:buy_it/core/constants/colors.dart';
 import 'package:buy_it/data/models/product.dart';
-import 'package:buy_it/presentation/providers/catalog_provider.dart';
+import 'package:buy_it/presentation/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +14,7 @@ class ProductCardInWishlist extends StatefulWidget {
 class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
   @override
   Widget build(BuildContext context) {
-    final bool isBought = context.read<CatalogProvider>().productBuyMap[widget.product.id] ?? false;
+    final bool isBought = context.read<WishlistProvider>().productBuyMap[widget.product.id] ?? false;
     return Container(
       padding: EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -56,7 +56,7 @@ class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
               checkColor: Colors.black,
               value: isBought,
               onChanged: (newValue) {
-                context.read<CatalogProvider>().toggleBought(widget.product.id, newValue ?? false);
+                context.read<WishlistProvider>().toggleBought(widget.product.id, newValue ?? false);
               },
             ),
           )

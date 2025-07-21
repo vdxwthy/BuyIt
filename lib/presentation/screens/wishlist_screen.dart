@@ -1,9 +1,9 @@
+import 'package:buy_it/presentation/providers/wishlist_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:implicitly_animated_reorderable_list_2/implicitly_animated_reorderable_list_2.dart';
 import 'package:implicitly_animated_reorderable_list_2/transitions.dart';
 import 'package:provider/provider.dart';
 import 'package:buy_it/data/models/product.dart';
-import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:buy_it/presentation/widgets/product_card_in_wishlist.dart';
 import 'package:buy_it/core/constants/colors.dart';
 
@@ -18,12 +18,12 @@ class _WishlistScreenState extends State<WishlistScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<CatalogProvider>().fetchProductsInWishlist();
+    context.read<WishlistProvider>().fetchProductsInWishlist();
   }
 
   @override
   Widget build(BuildContext context) {
-    final provider = context.watch<CatalogProvider>();
+    final provider = context.watch<WishlistProvider>();
     final isBoughtMap = provider.productBuyMap;
     final allProducts = provider.productsInWishlist;
 
