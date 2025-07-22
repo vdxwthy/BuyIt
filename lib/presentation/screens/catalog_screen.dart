@@ -126,14 +126,26 @@ class _CatalogScreenState extends State<CatalogScreen> {
               )
             ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/wishlist');
-        },
-        backgroundColor: accentColor,
-        elevation: 0,
-        tooltip: "Корзина",
-        child: const Icon(Icons.shopping_cart, color: Colors.white),
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          color: accentColor,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(17),
+          border: Border.all(
+            color: const Color.fromARGB(255, 242, 208, 72),
+            width: 1,
+          ),
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, '/wishlist');
+          },
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          tooltip: "Корзина",
+          highlightElevation: 0,
+          child: const Icon(Icons.format_list_bulleted, color: Colors.white),
+        ),
       ),
     );
   }

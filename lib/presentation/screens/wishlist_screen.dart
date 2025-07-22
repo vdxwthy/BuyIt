@@ -39,13 +39,14 @@ class _WishlistScreenState extends State<WishlistScreen> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         backgroundColor: grayColor,
-        title: const Text('Корзина'),
+        title: const Text('Список'),
         actions: [
           IconButton(
             onPressed: () {
               provider.clearWishlist();
             },
             icon: const Icon(Icons.delete_forever_rounded),
+            tooltip: "Очистить список",
           ),
         ],
       ),

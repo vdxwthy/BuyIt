@@ -16,7 +16,7 @@ class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
   Widget build(BuildContext context) {
     final bool isBought = context.read<WishlistProvider>().productBuyMap[widget.product.id] ?? false;
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
@@ -26,8 +26,8 @@ class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
         children: [
           Image.network(
             widget.product.imageUrl ?? "https://upload.wikimedia.org/wikipedia/commons/9/9a/%D0%9D%D0%B5%D1%82_%D1%84%D0%BE%D1%82%D0%BE.png",
-            height: 90,
-            width: 90,
+            height: 100,
+            width: 100,
             fit: BoxFit.contain,
           ),
           const SizedBox(width: 16),
