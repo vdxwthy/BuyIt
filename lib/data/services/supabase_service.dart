@@ -1,3 +1,4 @@
+import 'package:buy_it/data/enums/table_name.dart';
 import 'package:buy_it/data/models/category.dart';
 import 'package:buy_it/data/models/product.dart';
 import 'package:buy_it/data/models/product_subcategories.dart';
@@ -10,120 +11,155 @@ class SupabaseService {
 
   final SupabaseClient _client = Supabase.instance.client;
 
-
   Future<List<Category>> fetchCategoriesByStore(int storeId) async {
-    final response = await _client.from('categories').select().eq('store', storeId);
-    return (response as List).map((json) => Category.fromJson(json as Map<String, dynamic>)).toList();
+    try {
+      final response = await _client.from(TableName.categories.value).select().eq('store', storeId);
+      return (response as List).map((json) => Category.fromJson(json as Map<String, dynamic>)).toList();
+    } catch(e) {
+      return [];
+    }
+    
   }
 
   Future<List<Store>> fetchStores() async {
-    final response = await _client.from('stores').select();
-    return (response as List).map((json) => Store.fromJson(json as Map<String, dynamic>)).toList();
+    try {
+      final response = await _client.from(TableName.stores.value).select();
+      return (response as List).map((json) => Store.fromJson(json as Map<String, dynamic>)).toList();
+    }
+    catch(e) {
+      return [];
+    }
   }
 
   Future<List<Subcategory>> fetchSubcategoryById(int id) async {
-    final response = await _client.from("subcategories").select().eq('id', id);
-    return (response as List).map((json) => Subcategory.fromJson(json as Map<String, dynamic>)).toList();
+    try {
+      final response = await _client.from(TableName.subcategories.value).select().eq('id', id);
+      return (response as List).map((json) => Subcategory.fromJson(json as Map<String, dynamic>)).toList();
+    } 
+    catch(e) {
+      return [];
+    }
   }
 
   Future<List<Subcategory>> fetchSubCategoriesByCategory(Category category) async {
-    final response = await _client
-      .from("subcategory_categories")
-      .select()
-      .eq('category', category.id);
-    
-    final subcategoryIds = (response as List)
-      .map((json) => SubcategoryCategories.fromJson(json as Map<String, dynamic>).subcategory)
-      .toList();
+    try {
+      final response = await _client
+        .from(TableName.subcategoryCategories.value)
+        .select()
+        .eq('category', category.id);
+      
+      final subcategoryIds = (response as List)
+        .map((json) => SubcategoryCategories.fromJson(json as Map<String, dynamic>).subcategory)
+        .toList();
 
-    if (subcategoryIds.isEmpty) return [];
+      if (subcategoryIds.isEmpty) return [];
 
-    final subcategoriesResponse = await _client
-      .from("subcategories")
-      .select()
-      .inFilter('id', subcategoryIds);
+      final subcategoriesResponse = await _client
+        .from(TableName.subcategories.value)
+        .select()
+        .inFilter('id', subcategoryIds);
 
-    return (subcategoriesResponse as List)
-      .map((json) => Subcategory.fromJson(json as Map<String, dynamic>))
-      .toList();
+      return (subcategoriesResponse as List)
+        .map((json) => Subcategory.fromJson(json as Map<String, dynamic>))
+        .toList();
+    }
+    catch(e) {
+      return [];
+    }
   }
 
   Future<Map<Subcategory, List<Product>>> fetchProductByCategory(Category category) async {
-    final subcategoryCategories = await _client
-      .from("subcategory_categories")
-      .select()
-      .eq('category', category.id);
-    
-    final subcategoryIds = (subcategoryCategories as List)
-      .map((json) => SubcategoryCategories.fromJson(json as Map<String, dynamic>).subcategory)
-      .toList();
-    
-    if (subcategoryIds.isEmpty) return {};
-    
-    final subcategoriesResponse = await _client
-      .from("subcategories")
-      .select()
-      .inFilter('id', subcategoryIds);
-    
-    final subcategories = (subcategoriesResponse as List)
-      .map((json) => Subcategory.fromJson(json as Map<String, dynamic>))
-      .toList();
-    
-    Map<Subcategory, List<Product>> result = {};
+      try {
+        final subcategoryCategories = await _client
+          .from(TableName.subcategoryCategories.value)
+          .select()
+          .eq('category', category.id);
+        
+        final subcategoryIds = (subcategoryCategories as List)
+          .map((json) => SubcategoryCategories.fromJson(json as Map<String, dynamic>).subcategory)
+          .toList();
+        
+        if (subcategoryIds.isEmpty) return {};
+        
+        final subcategoriesResponse = await _client
+          .from(TableName.subcategories.value)
+          .select()
+          .inFilter('id', subcategoryIds);
+        
+        final subcategories = (subcategoriesResponse as List)
+          .map((json) => Subcategory.fromJson(json as Map<String, dynamic>))
+          .toList();
+        
+        Map<Subcategory, List<Product>> result = {};
 
-    for (var subcategory in subcategories) {
-      result[subcategory] = [];
+        for (var subcategory in subcategories) {
+          result[subcategory] = [];
+        }
+        
+        final productsSubcategoriesResponse = await _client
+          .from(TableName.productSubcategories.value)
+          .select()
+          .inFilter('subcategory', subcategoryIds);
+        
+        final productSubcategories = (productsSubcategoriesResponse as List)
+          .map((json) => ProductSubcategories.fromJson(json as Map<String, dynamic>))
+          .toList();
+        
+        if (productSubcategories.isEmpty) return result;
+        
+        final productIds = productSubcategories
+          .map((ps) => ps.product)
+          .toList();
+        
+        final productResponse = await _client
+          .from(TableName.products.value)
+          .select()
+          .inFilter('id', productIds);
+        
+        final products = (productResponse as List)
+          .map((json) => Product.fromJson(json as Map<String, dynamic>))
+          .toList();
+        
+        for (var ps in productSubcategories) {
+          final subcategory = subcategories.firstWhere((s) => s.id == ps.subcategory);
+          final product = products.firstWhere((p) => p.id == ps.product);
+          result[subcategory]?.add(product);
+        }
+        
+        return result;
     }
-    
-    final productsSubcategoriesResponse = await _client
-      .from("product_subcategories")
-      .select()
-      .inFilter('subcategory', subcategoryIds);
-    
-    final productSubcategories = (productsSubcategoriesResponse as List)
-      .map((json) => ProductSubcategories.fromJson(json as Map<String, dynamic>))
-      .toList();
-    
-    if (productSubcategories.isEmpty) return result;
-    
-    final productIds = productSubcategories
-      .map((ps) => ps.product)
-      .toList();
-    
-    final productResponse = await _client
-      .from("products")
-      .select()
-      .inFilter('id', productIds);
-    
-    final products = (productResponse as List)
-      .map((json) => Product.fromJson(json as Map<String, dynamic>))
-      .toList();
-    
-    for (var ps in productSubcategories) {
-      final subcategory = subcategories.firstWhere((s) => s.id == ps.subcategory);
-      final product = products.firstWhere((p) => p.id == ps.product);
-      result[subcategory]?.add(product);
+    catch (e) {
+      return {};
     }
-    
-    return result;
+  
   }
 
   Future<List<Product>> getProductById(int id) async {
-    final response = await _client.from("products").select().eq('id', id);
-    return (response as List).map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+    try{
+      final response = await _client.from(TableName.products.value).select().eq('id', id);
+      return (response as List).map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+    }
+    catch (e) {
+      return [];
+    }
   }
 
   Future<List<Product>> getProductsByIds(List<int> ids) async {
-    if (ids.isEmpty) return [];
+    try {
+      if (ids.isEmpty) return [];
 
-    final response = await _client
-        .from("products")
-        .select()
-        .inFilter('id', ids); 
+      final response = await _client
+          .from(TableName.products.value)
+          .select()
+          .inFilter('id', ids); 
 
-    return (response as List)
-        .map((json) => Product.fromJson(json as Map<String, dynamic>))
-        .toList();
+      return (response as List)
+          .map((json) => Product.fromJson(json as Map<String, dynamic>))
+          .toList();
+    }
+    catch (e) {
+      return [];
+    }
   }
 
 }
