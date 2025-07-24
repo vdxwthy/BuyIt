@@ -12,7 +12,6 @@ class CatalogProvider with ChangeNotifier {
   List<Subcategory> _subcategories = [];
   Map<Subcategory, List<Product>> _productByCategory = {};
 
-
   List<Store> get stores => _stores;
   List<model.Category> get categories => _categories;
   List<Subcategory> get subgategories => _subcategories;
