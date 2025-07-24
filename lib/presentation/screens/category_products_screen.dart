@@ -46,7 +46,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   Widget build(BuildContext context) {
     final productByCategory = context.watch<CatalogProvider>().productByCategory;
 
-    // создаём ключи, если ещё не были созданы
     for (var subcategory in productByCategory.keys) {
       subcategoryKeys.putIfAbsent(subcategory.id, () => GlobalKey());
     }
@@ -91,48 +90,49 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
             ),
           ),
           Expanded(
-            child: ListView(
+            child: SingleChildScrollView(
               controller: _scrollController,
-              children: productByCategory.entries.map((entry) {
-                final subcategory = entry.key;
-                final products = entry.value;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      key: subcategoryKeys[subcategory.id],
-                      padding: const EdgeInsets.all(8.0),
-                      child: AutoSizeText(
-                        subcategory.name,
-                        maxLines: 1,
-                        minFontSize: 18,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: productByCategory.entries.map((entry) {
+                  final subcategory = entry.key;
+                  final products = entry.value;
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        key: subcategoryKeys[subcategory.id],
+                        padding: const EdgeInsets.all(8.0),
+                        child: AutoSizeText(
+                          subcategory.name,
+                          maxLines: 1,
+                          minFontSize: 18,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
                         ),
                       ),
-                    ),
-                    GridView.builder(
-                      padding: EdgeInsets.all(12),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                        childAspectRatio: 0.70,
+                      GridView(
+                        padding: EdgeInsets.all(12),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 0.70,
+                        ),
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: products
+                            .map((product) => ProductCard(product: product))
+                            .toList(),
                       ),
-                      itemCount: products.length,
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index2) {
-                        final product = products[index2];
-                        return ProductCard(product: product);
-                      },
-                    ),
-                  ],
-                );
-              }).toList(),
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
