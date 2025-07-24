@@ -49,7 +49,6 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
     for (var subcategory in productByCategory.keys) {
       subcategoryKeys.putIfAbsent(subcategory.id, () => GlobalKey());
     }
-
     return Scaffold(
       backgroundColor: grayColor,
       appBar: AppBar(
@@ -67,26 +66,36 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         children: [
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            child: Row(
-              children: productByCategory.keys.map((subcategory) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
-                  child: InkWell(
-                    onTap: () {
-                      _scrollToSubcategory(subcategory.id);
-                    },
-                    splashFactory: NoSplash.splashFactory,
-                    highlightColor: Colors.transparent,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: Text(
-                        subcategory.name,
-                        style: TextStyle(color: Colors.black),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: Row(
+                children: productByCategory.keys.map((subcategory) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: InkWell(
+                      onTap: () {
+                        _scrollToSubcategory(subcategory.id);
+                      },
+                      splashFactory: NoSplash.splashFactory,
+                      highlightColor: Colors.transparent,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                          border: BoxBorder.all(
+                            color: Colors.black.withValues(alpha: 0.1)
+                          )
+                        ),
+                        child: Text(
+                          subcategory.name,
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
           Expanded(
