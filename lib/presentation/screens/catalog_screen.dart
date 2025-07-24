@@ -12,7 +12,7 @@ class CatalogScreen extends StatefulWidget {
 }
 
 class _CatalogScreenState extends State<CatalogScreen> {
-  int? _selectedStoreId;
+  int? _selectedStoreId = 1;
   set selectedStoreId(int value) {
     _selectedStoreId = value;
     context.read<CatalogProvider>().fetchCategoriesByStore(value);
@@ -28,8 +28,10 @@ class _CatalogScreenState extends State<CatalogScreen> {
       if (mounted) {
         context.read<CatalogProvider>().fetchStores();
         context.read<CatalogProvider>().fetchCategoriesByStore(selectedStoreId);
+        selectedStoreId = 1;
       }
     });
+
   }
   @override
   Widget build(BuildContext context) {

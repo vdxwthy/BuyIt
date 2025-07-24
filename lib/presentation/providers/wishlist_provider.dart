@@ -13,6 +13,7 @@ class WishlistProvider with ChangeNotifier  {
 
   void init() async {
     _productBuyMap = await loadProductBuyMap();
+    print("qweqweasdasd");
   }
 
   Future<void> fetchProductsInWishlist() async {
