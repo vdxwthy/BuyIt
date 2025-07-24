@@ -15,6 +15,9 @@ class CategoryProductsScreen extends StatefulWidget {
 
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   Category? selectedCategory;
+  
+  final Map<int, GlobalKey> subcategoryKeys = {};
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void didChangeDependencies() {
@@ -27,65 +30,111 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
       Navigator.pop(context); 
     }
   }
+
+  void _scrollToSubcategory(int id) {
+    final context = subcategoryKeys[id]?.currentContext;
+    if (context != null) {
+      Scrollable.ensureVisible(
+        context,
+        duration: Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
     final productByCategory = context.watch<CatalogProvider>().productByCategory;
+
+    // создаём ключи, если ещё не были созданы
+    for (var subcategory in productByCategory.keys) {
+      subcategoryKeys.putIfAbsent(subcategory.id, () => GlobalKey());
+    }
+
     return Scaffold(
       backgroundColor: grayColor,
       appBar: AppBar(
         scrolledUnderElevation: 0, 
         actions: [
           IconButton(
-            icon: Icon(Icons.search_outlined, color: Colors.black,),
-            onPressed: () {
-            },
+            icon: Icon(Icons.search_outlined, color: Colors.black),
+            onPressed: () {},
           ),
         ],
         title: Text(selectedCategory?.name ?? "Упс..."),
         backgroundColor: grayColor,
       ),
-      body: ListView.builder(
-        itemCount: productByCategory.keys.length,
-        itemBuilder: (context, index) {
-          final subcategory = productByCategory.keys.elementAt(index);
-          final products = productByCategory[subcategory]!;
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: AutoSizeText(
-                  subcategory.name,
-                  maxLines: 1,
-                  minFontSize: 18,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24,
+      body: Column(
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: productByCategory.keys.map((subcategory) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8),
+                  child: InkWell(
+                    onTap: () {
+                      _scrollToSubcategory(subcategory.id);
+                    },
+                    splashFactory: NoSplash.splashFactory,
+                    highlightColor: Colors.transparent,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: Text(
+                        subcategory.name,
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              GridView.builder(
-                padding: EdgeInsets.all(12),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 12,
-                  crossAxisSpacing: 12,
-                  childAspectRatio: 0.70
-                ),
-                itemCount: products.length,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index2) {
-                  final product = products[index2];
-                  return ProductCard(product: product);
-                },
-              ),
-            ],
-          );
-        },
+                );
+              }).toList(),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              controller: _scrollController,
+              children: productByCategory.entries.map((entry) {
+                final subcategory = entry.key;
+                final products = entry.value;
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      key: subcategoryKeys[subcategory.id],
+                      padding: const EdgeInsets.all(8.0),
+                      child: AutoSizeText(
+                        subcategory.name,
+                        maxLines: 1,
+                        minFontSize: 18,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ),
+                    GridView.builder(
+                      padding: EdgeInsets.all(12),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 0.70,
+                      ),
+                      itemCount: products.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index2) {
+                        final product = products[index2];
+                        return ProductCard(product: product);
+                      },
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
-
     );
   }
 }
