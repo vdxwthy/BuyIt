@@ -41,11 +41,17 @@ class _ProductCardInWishlistState extends State<ProductCardInWishlist> {
                   overflow: TextOverflow.ellipsis,
                   softWrap: false,
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14
                     ),
                 ),
-                Text(widget.product.price.toString())
+                Text(
+                  "${widget.product.price}₽",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
               ],
             ),
           ),
