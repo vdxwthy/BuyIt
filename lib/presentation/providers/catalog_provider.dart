@@ -11,13 +11,13 @@ class CatalogProvider with ChangeNotifier {
   List<Store> _stores = [];
   List<Subcategory> _subcategories = [];
   Map<Subcategory, List<Product>> _productByCategory = {};
-
+  List<Product> _searchProducts = [];
 
   List<Store> get stores => _stores;
   List<model.Category> get categories => _categories;
   List<Subcategory> get subgategories => _subcategories;
   Map<Subcategory, List<Product>> get productByCategory => _productByCategory;
-
+  List<Product> get searchProducts => _searchProducts;
 
   Future<void> fetchCategoriesByStore(int storeId) async {
     _categories = await GetIt.I<SupabaseService>().fetchCategoriesByStore(storeId);
@@ -36,6 +36,11 @@ class CatalogProvider with ChangeNotifier {
 
   Future<void> fetchProductByCategory(model.Category category) async {
     _productByCategory = await GetIt.I<SupabaseService>().fetchProductByCategory(category);
+    notifyListeners();
+  }
+
+  Future<void> searchProductsByName(String name) async {
+    _searchProducts = await GetIt.I<SupabaseService>().searchProductsByName(name);
     notifyListeners();
   }
 }

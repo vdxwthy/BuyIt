@@ -9,30 +9,29 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_ANONKEY']!,
   );
+
   GetIt.I.registerSingleton(SupabaseService());
+
+  final wishlistProvider = WishlistProvider();
+  wishlistProvider.init();
 
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) {
-          final catalogProvider = CatalogProvider();
-          return catalogProvider;
-        }),
-        ChangeNotifierProvider(create: (_){
-          final wishlistProvider = WishlistProvider();
-          wishlistProvider.init();
-          return wishlistProvider;
-        })
+        ChangeNotifierProvider(create: (_) => CatalogProvider()),
+        ChangeNotifierProvider.value(value: wishlistProvider),
       ],
       child: const ChizhikApp(),
     ),
   );
 }
+
 
 
 

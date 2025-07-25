@@ -161,5 +161,15 @@ class SupabaseService {
       return [];
     }
   }
-
+  
+  Future<List<Product>> searchProductsByName(String name) async {
+    try {
+      if (name.isEmpty) return [];
+      final response = await _client.from(TableName.products.value).select().ilike("name", "%${name.toLowerCase()}%");
+      return (response as List).map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+    }
+    catch (e) {
+      return [];
+    }
+  }
 }

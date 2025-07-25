@@ -1,6 +1,7 @@
 import 'package:buy_it/core/constants/colors.dart';
 import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:buy_it/presentation/widgets/category_card.dart';
+import 'package:buy_it/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,11 @@ class CatalogScreen extends StatefulWidget {
 }
 
 class _CatalogScreenState extends State<CatalogScreen> {
-  int? _selectedStoreId;
+  String searchText = "";
+  int? _selectedStoreId = 1;
+  bool _searchFocus = false;
+  final FocusNode _focusNode = FocusNode();
+
   set selectedStoreId(int value) {
     _selectedStoreId = value;
     context.read<CatalogProvider>().fetchCategoriesByStore(value);
@@ -21,16 +26,34 @@ class _CatalogScreenState extends State<CatalogScreen> {
   int get selectedStoreId {
     return _selectedStoreId ?? 0;
   }
+
+  void _onFocusChange() {
+    setState(() {
+      _searchFocus = _focusNode.hasFocus;
+    });
+    debugPrint(_searchFocus.toString());
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _focusNode.addListener(_onFocusChange);
+
     Future.microtask(() {
       if (mounted) {
         context.read<CatalogProvider>().fetchStores();
         context.read<CatalogProvider>().fetchCategoriesByStore(selectedStoreId);
+        selectedStoreId = 1;
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final categories = context.watch<CatalogProvider>().categories;
@@ -52,6 +75,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                           border: Border.all(color: const Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.05))
                         ),
                         child: TextField(
+                          focusNode: _focusNode,
                           decoration: InputDecoration(
                             hintText: 'Ищите товары',
                             hintStyle: TextStyle(color: Color.fromARGB(255, 0, 0, 0).withValues(alpha: 0.2)),
@@ -59,6 +83,17 @@ class _CatalogScreenState extends State<CatalogScreen> {
                             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             border: InputBorder.none,
                           ),
+                          // onSubmitted: (value) {
+                          //   print(value);
+                          // },
+                          onChanged: (value) {
+                            searchText = value;
+                            Future.delayed(const Duration(seconds: 2), () {
+                              if (mounted) {
+                                context.read<CatalogProvider>().searchProductsByName(searchText);
+                              }
+                            });
+                          },
                         ),
                       ),
 
@@ -99,8 +134,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
                           },
                         ),
                       ),
-
+                  
                   const SizedBox(height: 12),
+                  !_searchFocus && searchText.isEmpty ?
                   Expanded(
                     child: categories.isEmpty ? Center(
                       child: Text("Категории не найдены:("),
@@ -122,6 +158,24 @@ class _CatalogScreenState extends State<CatalogScreen> {
                       },
                     ),
                   )
+                  :
+                  
+                 Expanded(
+                  child: GridView(
+                        padding: EdgeInsets.all(12),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 0.70,
+                        ),
+                        shrinkWrap: true,
+                        children: context.watch<CatalogProvider>().searchProducts
+                            .map((product) => ProductCard(product: product))
+                            .toList(),
+                      ),
+                 )
+
                 ],
               )
             ),
