@@ -4,6 +4,7 @@ import 'package:buy_it/data/models/product.dart';
 import 'package:buy_it/presentation/providers/wishlist_provider.dart';
 import 'package:buy_it/presentation/widgets/price_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductCard extends StatefulWidget {
@@ -69,6 +70,7 @@ class _ProductCardState extends State<ProductCard> {
                       highlightColor: Colors.transparent,
                       onPressed: (){
                         context.read<WishlistProvider>().appendId(widget.product.id);
+                        HapticFeedback.mediumImpact();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(

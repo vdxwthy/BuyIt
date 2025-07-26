@@ -3,6 +3,7 @@ import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:buy_it/presentation/widgets/category_card.dart';
 import 'package:buy_it/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class CatalogScreen extends StatefulWidget {
@@ -108,6 +109,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                             final isSelected = store.id == selectedStoreId;
                             return GestureDetector(
                               onTap: () {
+                                HapticFeedback.mediumImpact();
                                 setState(() {
                                   selectedStoreId = store.id;
                                 });
@@ -192,6 +194,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
         ),
         child: FloatingActionButton(
           onPressed: () {
+            HapticFeedback.mediumImpact();
+
             Navigator.pushNamed(context, '/wishlist');
           },
           backgroundColor: Colors.transparent,

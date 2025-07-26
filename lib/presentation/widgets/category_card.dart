@@ -1,5 +1,6 @@
 import 'package:buy_it/data/models/category.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CategoryCard extends StatefulWidget {
   const CategoryCard({super.key, required this.category});
@@ -19,6 +20,7 @@ class _CategoryCardState extends State<CategoryCard> {
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
       onTap: () {
+        HapticFeedback.mediumImpact();
         Navigator.pushNamed(context, '/category_products', arguments: widget.category);
       },
       child: AnimatedOpacity(
