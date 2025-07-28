@@ -1,6 +1,8 @@
 import 'package:buy_it/data/models/category.dart';
+import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class CategoryCard extends StatefulWidget {
   const CategoryCard({super.key, required this.category});
@@ -21,7 +23,8 @@ class _CategoryCardState extends State<CategoryCard> {
       onTapCancel: () => setState(() => _isPressed = false),
       onTap: () {
         HapticFeedback.mediumImpact();
-        Navigator.pushNamed(context, '/category_products', arguments: widget.category);
+        context.read<CatalogProvider>().setSelectedCategory(widget.category);
+        Navigator.pushNamed(context, '/category_products');
       },
       child: AnimatedOpacity(
         curve: Curves.bounceInOut,

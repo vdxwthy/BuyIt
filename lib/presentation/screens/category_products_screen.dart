@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:buy_it/core/constants/colors.dart';
-import 'package:buy_it/data/models/category.dart';
 import 'package:buy_it/presentation/providers/catalog_provider.dart';
 import 'package:buy_it/presentation/widgets/product_card.dart';
 import 'package:flutter/material.dart';
@@ -14,21 +13,20 @@ class CategoryProductsScreen extends StatefulWidget {
 }
 
 class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
-  Category? selectedCategory;
-  
   final Map<int, GlobalKey> subcategoryKeys = {};
   final ScrollController _scrollController = ScrollController();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final args = ModalRoute.of(context)?.settings.arguments;
-    if (args is Category && selectedCategory?.id != args.id) {
-      selectedCategory = args;
-      context.read<CatalogProvider>().fetchProductByCategory(selectedCategory!);
-    } else if (args == null) {
-      Navigator.pop(context); 
-    }
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final selectedCategory = context.read<CatalogProvider>().selectedCategory;
+      if (selectedCategory != null) {
+        context.read<CatalogProvider>().fetchProductByCategory(selectedCategory);
+      } else {
+        Navigator.pop(context);
+      }
+    });
   }
 
   void _scrollToSubcategory(int id) {
@@ -44,11 +42,14 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
   
   @override
   Widget build(BuildContext context) {
-    final productByCategory = context.watch<CatalogProvider>().productByCategory;
+    final catalogProvider = context.watch<CatalogProvider>();
+    final productByCategory = catalogProvider.productByCategory;
+    final selectedCategory = catalogProvider.selectedCategory;
 
     for (var subcategory in productByCategory.keys) {
       subcategoryKeys.putIfAbsent(subcategory.id, () => GlobalKey());
     }
+    
     return Scaffold(
       backgroundColor: grayColor,
       appBar: AppBar(
@@ -56,7 +57,9 @@ class _CategoryProductsScreenState extends State<CategoryProductsScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.search_outlined, color: Colors.black),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, '/search');
+            },
           ),
         ],
         title: Text(selectedCategory?.name ?? "Упс..."),

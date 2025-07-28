@@ -32,7 +32,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
     setState(() {
       _searchFocus = _focusNode.hasFocus;
     });
-    debugPrint(_searchFocus.toString());
   }
 
   @override
@@ -84,9 +83,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
                             prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
                             border: InputBorder.none,
                           ),
-                          // onSubmitted: (value) {
-                          //   print(value);
-                          // },
                           onChanged: (value) {
                             searchText = value;
                             Future.delayed(const Duration(seconds: 2), () {

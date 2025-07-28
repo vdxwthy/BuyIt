@@ -172,4 +172,22 @@ class SupabaseService {
       return [];
     }
   }
+
+  Future<List<Product>> searchProductsByNameAndCategory(String name, Category category) async {
+    try {
+      if (name.isEmpty) return [];
+      final subcategoriesResponse = await _client.from(TableName.subcategoryCategories.value).select('subcategory').eq('category', category.id);
+      final subcategories = (subcategoriesResponse as List).map((json) => (json as Map<String, dynamic>)['subcategory'] as int).toList();
+      
+      final productIdsResponse = await _client.from(TableName.productSubcategories.value).select('product').inFilter('subcategory', subcategories);
+      final productsIds = (productIdsResponse as List).map((json) => (json as Map<String, dynamic>)['product'] as int).toList();
+
+      final productsResponse = await _client.from(TableName.products.value).select().inFilter('id', productsIds).ilike('name', '%${name.toLowerCase()}%');
+      final products = (productsResponse as List).map((json) => Product.fromJson(json as Map<String, dynamic>)).toList();
+      return products;
+    }
+    catch (e) {
+      return [];
+    }
+  }
 }
